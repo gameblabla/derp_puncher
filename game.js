@@ -1,27 +1,68 @@
 /*
+The MIT License (MIT)
+
+Copyright (c) 2016, Gameblabla
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), 
+to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, 
+INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, 
+DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+
+/*
  * Of course, the code is awful :/
- * I should improve but that's for a next episode
+ * I should improve it but that's for a next episode
 */
 
 		var mousex , mousey , mousse = 0;
-		var score_game = new Array(6);
-		var highscore_game = new Array(6);
-		var hp_game = new Array(4);
 
 		var bx = 0 , bleeding = 0 , bleed_time = 0;
 		var hpgod = 0, chainx = 0;
 		var attacking = 0;
 		var firefox_os = 0;
 		
-		/* temporary variables */
-		var sc , sc2;
+		var keyboard = 0;
+		var keyboard_up = 0;
+/*
+ * Up = 38 
+ * Down = 40
+ * Left = 37
+ * Right = 39
+ * Space = 32
+ * Enter = 13
+*/
+
+window.addEventListener("keydown", function(evt) {
+	keyboard = evt.keyCode;
+}, this);
+
+window.addEventListener("keyup", function(evt) {
+	if (keyboard > 0) keyboard = 0;
+}, this);
 
 
 window.onload = function() 
 {
 		var canvas = document.getElementById('canvas')
 		var canvas_draw = canvas.getContext('2d'); // A layer for the background
+		
+		canvas_draw.webkitImageSmoothingEnabled = false;
+		canvas_draw.mozImageSmoothingEnabled = false;
+		canvas_draw.imageSmoothingEnabled = false;
+		
 		var precalculated_fps = 1000 / 90;
+		
+		var score_game = new Array(6);
+		var highscore_game = new Array(6);
+		var hp_game = new Array(4);
+		var temp_var = new Array(2);
 	  
 		var back = new Image();
 		var derpyfaible = new Image();
@@ -111,6 +152,7 @@ window.onload = function()
 		
 	  (function (window) 
 	  { // Used for dah loop
+		  
 			function gameLoop() 
 			{
 				/* Faster way of clearing the canvas screen*/
@@ -128,7 +170,7 @@ window.onload = function()
 							canvas_draw.drawImage(chif, (24*highscore_game[i]), 96, 24, 32, 0+(i*20), 275, 24, 32);
 						}
 						
-						if (mousse == 1)
+						if (mousse == 1 || (keyboard == 13 || keyboard == 32))
 						{
 							derpyhp = 999;
 							score_count = 0;
@@ -166,17 +208,17 @@ window.onload = function()
 								if (score_count > highscore)
 								{
 									highscore = score_count;
-									sc = highscore;
-									sc2 = ((sc / 10000) % 10 << 0);
-									highscore_game[0]=localStorage.setItem("high-score_game[0]",sc2);
-									sc2 = (sc / 1000) % 10 << 0;
-									highscore_game[1]=localStorage.setItem("high-score_game[1]",sc2);
-									sc2 = (sc / 100) % 10 << 0;
-									highscore_game[2]=localStorage.setItem("high-score_game[2]",sc2);
-									sc2 = (sc / 10) % 10 << 0;
-									highscore_game[3]=localStorage.setItem("high-score_game[3]",sc2);
-									sc2 = sc%10 << 0;
-									highscore_game[4]=localStorage.setItem("high-score_game[4]",sc2);
+									temp_var[0] = highscore;
+									temp_var[1] = ((temp_var[0] / 10000) % 10 << 0);
+									highscore_game[0]=localStorage.setItem("high-score_game[0]",temp_var[1]);
+									temp_var[1] = (temp_var[0] / 1000) % 10 << 0;
+									highscore_game[1]=localStorage.setItem("high-score_game[1]",temp_var[1]);
+									temp_var[1] = (temp_var[0] / 100) % 10 << 0;
+									highscore_game[2]=localStorage.setItem("high-score_game[2]",temp_var[1]);
+									temp_var[1] = (temp_var[0] / 10) % 10 << 0;
+									highscore_game[3]=localStorage.setItem("high-score_game[3]",temp_var[1]);
+									temp_var[1] = temp_var[0] %10 << 0;
+									highscore_game[4]=localStorage.setItem("high-score_game[4]",temp_var[1]);
 									alert("You beat the highscore! "+highscore+" pts!");
 								}
 								else
@@ -210,13 +252,14 @@ window.onload = function()
 					case 0: //In-Game
 						canvas_draw.drawImage(back, 0, 0);
 						timeanim = timeanim + 1; // This is used for animating Derpy (Timing)
-						
+			
 						score_convert();
 
 						if (derpyhp > 999) 
 						{
 							derpyhp = 999;
 							tron_duree = 0;
+							score_convert();
 						}
 
 						if (attack < 4)
@@ -395,7 +438,7 @@ window.onload = function()
 								attack_time = attack_time + 1;
 								tron_duree = tron_duree + 1.5;
 								 
-								 if (mousse == 1)
+								 if (mousse == 1 || (keyboard == 13 || keyboard == 32))
 								 {
 								
 									if (tron_duree > 48 && attack_d == 0){
@@ -525,7 +568,7 @@ window.onload = function()
 								canvas_draw.restore();
 							}
 				
-						   if ((mousex > 480-128 && mousey > 0 && mousey < 160) && weapon == 1 && attack == 0){
+						   if ( ((mousex > 480-128 && mousey > 0 && mousey < 160) || (keyboard == 38)) && weapon == 1 && attack == 0){
 							   bleeding = 0;
 							   snd_chainsaw.stop();
 							   snd_crack.stop();
@@ -533,7 +576,7 @@ window.onload = function()
 							   attacking = 0;
 							   mousse = 0;
 						   }
-						   else if ((mousex > 480-128 && mousey > 160) && weapon == 0 && attack == 0){
+						   else if (((mousex > 480-128 && mousey > 160) || (keyboard == 40)) && weapon == 0 && attack == 0){
 							   bleeding = 0;
 							   snd_chainsaw.stop();
 							   snd_crack.stop();
@@ -541,7 +584,7 @@ window.onload = function()
 							   attacking = 0;
 							   mousse = 0;
 						   }
-						   else if (attacking == 0 && mousse == 1 && (mousex < 375) && derpyY == 70){
+						   else if (attacking == 0 && ((mousse == 1 && mousex < 375) || (keyboard == 13 || keyboard == 32)) && derpyY == 70){
 							 attacking = 1;
 						   }
 					   
@@ -643,8 +686,7 @@ window.onload = function()
 		score_game[1]= ((scored / 1000) % 10) << 0;
 		score_game[2]= ((scored / 100) % 10) << 0;
 		score_game[3]= ((scored / 10) % 10) << 0;
-		score_game[4]= (scored % 10) << 0;
-						
+		score_game[4]= (scored % 10) << 0;			
 		hp_game[0]= ((derpyhp / 100) % 10) << 0;
 		hp_game[1]= ((derpyhp / 10) % 10) << 0;
 		hp_game[2]= (derpyhp % 10) << 0;	

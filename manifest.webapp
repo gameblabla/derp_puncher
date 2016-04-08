@@ -2,7 +2,7 @@
   "version": "1.12",
   "name": "Derp Puncher",
   "launch_path": "/index.html",
-  "description": "Beat Derpy and score as many points as you can while it is alive !",
+  "description": "Beat Derpy and score as many points as you can !",
   "icons": {
     "30": "/30.png",
     "60": "/60.png",
@@ -11,7 +11,7 @@
   },
   "developer": {
     "name": "Gameblabla",
-    "url": "http://gameblabla.olympe.in/"
+    "url": "https://gameblabla.olympe.in/"
   },
   "orientation": "landscape",
   "installs_allowed_from": [
